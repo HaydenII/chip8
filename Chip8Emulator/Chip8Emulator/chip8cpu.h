@@ -54,6 +54,7 @@ public:
 	uint8_t VD;
 	uint8_t VE;
 	uint8_t VF; // VF doubltes as a status flag for some instructions
+	uint8_t regs[0xF];
 
 	// Address register
 	uint16_t I;
@@ -86,7 +87,21 @@ public:
 	// Increment the stack pointer, put the current pc on the top of the stack
 	// Then set pc to a new address
 	void CALL();
-	// Skip the next instruction
+	// Skip the next instruction if 8 bit val provided == in register referenced
 	void SE();
+	// Skip next instruction if 8 bit val provided != register referenced
+	void SNE();
+	// Skip next instructions if the two registers referenced in instruction are equal
+	void SE_2();
+	//Put the given value into register referenced
+	void LD();
+	// Add the value in register referenced to byte provided
+	void ADD();
+	// Set reg1 to value of reg2
+	void LD_2();
+	// Set reg1 to val after performing a bitwise OR on the values
+	void OR();
+	// Set reg1 to val after performing a bitwise AND on the values
+	void AND();
 };
 

@@ -89,17 +89,103 @@ void chip8cpu::CALL()
 {
 	sp++;
 	stack[sp] = pc;
-
-	pc++;
-	hi = read(pc);
-	pc++;
-	lo = read(pc);
-	pc++;
-
-	pc = (hi << 8) | lo;
+	pc = (instruction16Bit & 0x0FFF);
 }
 
 void chip8cpu::SE()
 {
+	uint8_t val = (instruction16Bit & 0x00FF);
+	uint8_t reg = regs[((instruction16Bit >> 8) & 0x000F)];
+	if (val == reg) {
+		pc += 2;
+	}
+}
 
+void chip8cpu::SNE()
+{
+	uint8_t val = (instruction16Bit & 0x00FF);
+	uint8_t reg = regs[((instruction16Bit >> 8) & 0x000F)];
+	if (val != reg) {
+		pc += 2;
+	}
+}
+
+void chip8cpu::SE_2()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+	if (regX == regY) {
+		pc += 2;
+	}
+}
+
+void chip8cpu::LD()
+{
+	uint8_t val = (instruction16Bit & 0x00FF);
+	regs[((instruction16Bit >> 8) & 0x000F)] = val;
+}
+
+void chip8cpu::ADD()
+{
+	uint8_t val = (instruction16Bit & 0x00FF);
+	regs[((instruction16Bit >> 8) & 0x000F)] += val;
+}
+
+void chip8cpu::LD_2()
+{
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+	regs[((instruction16Bit >> 8) & 0x000F)] = regY;
+}
+
+void chip8cpu::OR()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+	regs[((instruction16Bit >> 8) & 0x000F)] = (regX | regY);
+}
+
+void chip8cpu::AND()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+	regs[((instruction16Bit >> 8) & 0x000F)] = (regX & regY);
+}
+
+void chip8cpu::XOR()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+	regs[((instruction16Bit >> 8) & 0x000F)] = (regX ^ regY);
+}
+
+void chip8cpu::ADD_2()
+{
+	uint8_t OregX = regs[((instruction16Bit >> 8) & 0x000F)];
+
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+
+	regs[((instruction16Bit >> 8) & 0x000F)] += regY;
+
+	if (regs[((instruction16Bit >> 8) & 0x000F)] < OregX) {
+		regs[0xF] = 0x01;
+	}
+	else {
+		regs[0xF] = 0x00;
+	}
+}
+
+void chip8cpu::SUB()
+{
+	uint8_t OregX = regs[((instruction16Bit >> 8) & 0x000F)];
+
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+
+	regs[((instruction16Bit >> 8) & 0x000F)] += regY;
+
+	if (regs[((instruction16Bit >> 8) & 0x000F)] > OregX) {
+		regs[0xF] = 0x01;
+	}
+	else {
+		regs[0xF] = 0x00;
+	}
 }
