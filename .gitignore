@@ -368,3 +368,12 @@ FodyWeavers.xsd
 Chip8Emulator/.vs/Chip8Emulator/v16/Browse.VC.db-wal
 *.db
 *.db
+*.tlog
+*.tlog
+*.obj
+*.pdb
+*.ilk
+*.pdb
+*.ipch
+*.log
+*.db
