@@ -1,5 +1,7 @@
 #pragma once
 #include <cstdint>
+#include <string>
+#include <vector>
 
 class Bus;
 
@@ -58,17 +60,31 @@ public:
 	uint16_t pc;
 
 	// stack pointer
-	uint8_t SP;
+	uint8_t sp;
 	uint16_t stack[16];
+	inline void DecrementStackPointer();
 
-	/*
-		 Instructions
-		 All instructions are 16bit
-	*/
+	// Array of pointers to the opcode functions
+	struct INSTRUCTION {
+		std::string name;
+		uint8_t(chip8cpu::* operate)(void) = nullptr;
+	};
+
+	// All instructions are stored in order,
+	std::vector<INSTRUCTION> ins;
 
 	// Jump to code at address
 	void SYS();
 	// Clear the display - implement later
 	void CLS();
+	// Set pc to address at stack pointer
+	void RET();
+	// Set pc to address
+	void JP();
+	// Increment the stack pointer, put the current pc on the top of the stack
+	// Then set pc to a new address
+	void CALL();
+	// Skip the next instruction
+	void SE();
 };
 
