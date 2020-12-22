@@ -14,13 +14,42 @@ uint16_t chip8cpu::ReadNext2Bytes()
 
 chip8cpu::chip8cpu()
 {
-	uint16_t mem_pointer;
-
-	using a = chip8cpu;
 }
 
 chip8cpu::~chip8cpu()
 {
+}
+
+void chip8cpu::initialise()
+{
+	/*
+	* LOADING FONSET IN STARTING AT 0X0000
+	*/
+	// Load fontset
+	uint16_t MemPtr = 0x0000;
+	uint8_t font_set[0x10][5] = {
+		{0xF0, 0x90, 0x90, 0x90, 0xF0},
+		{0x20, 0x60, 0x20, 0x20, 0x70},
+		{0xF0, 0x10, 0xF0, 0x80, 0xF0},
+		{0xF0, 0x10, 0xF0, 0x10, 0xF0},
+		{0x90, 0x90, 0xF0, 0x10, 0x10},
+		{0xF0, 0x80, 0xF0, 0x10, 0xF0},
+		{0xF0, 0x80, 0xF0, 0x90, 0xF0},
+		{0xF0, 0x10, 0x20, 0x40, 0x40},
+		{0xF0, 0x90, 0xF0, 0x90, 0xF0},
+		{0xF0, 0x90, 0xF0, 0x10, 0xF0},
+		{0xF0, 0x90, 0xF0, 0x90, 0x90},
+		{0xE0, 0x90, 0xE0, 0x90, 0xE0},
+		{0xF0, 0x80, 0x80, 0x80, 0xF0},
+		{0xE0, 0x90, 0x90, 0x90, 0xE0},
+		{0xF0, 0x80, 0xF0, 0x80, 0xF0},
+		{0xF0, 0x80, 0xF0, 0x80, 0x80}
+	};
+	for (auto& charactar : font_set) {
+		for (auto& byte : charactar) {
+			bus->mem.write(MemPtr++, byte);
+		}
+	}
 }
 
 void chip8cpu::clock()
@@ -252,6 +281,42 @@ void chip8cpu::RND() {
 
 void chip8cpu::DRW()
 {
-
+	// Starting memory location
+	uint16_t sMemLoc = I;
+	uint8_t BytesToRead = (instruction16Bit & 0x000F);
 }
 
+void chip8cpu::SKP()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+}
+
+void chip8cpu::LD_4()
+{
+	regs[((instruction16Bit >> 8) & 0x000F)] = DelayTimer;
+}
+
+void chip8cpu::LD_5()
+{
+	// Loop and check for key press
+	// break from loop when key pressed
+	// store key val in reg ref
+
+	uint8_t KeyVal = 0;
+	regs[((instruction16Bit >> 8) & 0x000F)] = KeyVal;
+}
+
+void chip8cpu::LD_6()
+{
+	DelayTimer = regs[((instruction16Bit >> 8) & 0x000F)];
+}
+
+void chip8cpu::LD_7()
+{
+	SoundTimer = regs[((instruction16Bit >> 8) & 0x000F)];
+}
+
+void chip8cpu::ADD_3()
+{
+	I += regs[((instruction16Bit >> 8) & 0x000F)];
+}

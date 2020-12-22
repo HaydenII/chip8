@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <bitset>
 
 #include "memory.h"
 #include "chip8cpu.h"

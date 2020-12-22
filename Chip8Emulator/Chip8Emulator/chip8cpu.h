@@ -11,7 +11,7 @@ class Bus;
 
 /*
 * ----
-* 0x000-0x1FF = Chip 8 interpreter
+* 0x000-0x1FF = Chip 8 interpreter and font set
 * 0x200-0xFFF = RAM & Program ROM
 * ----
 */
@@ -26,28 +26,12 @@ private:
 	uint16_t ReadNext2Bytes();
 public:
 	uint64_t display[32]{ 0 };
-	uint8_t font_set[0x10][5] = {
-		{0xF0, 0x90, 0x90, 0x90, 0xF0},
-		{0x20, 0x60, 0x20, 0x20, 0x70},
-		{0xF0, 0x10, 0xF0, 0x80, 0xF0},
-		{0xF0, 0x10, 0xF0, 0x10, 0xF0},		
-		{0x90, 0x90, 0xF0, 0x10, 0x10},		
-		{0xF0, 0x80, 0xF0, 0x10, 0xF0},		
-		{0xF0, 0x80, 0xF0, 0x90, 0xF0},		
-		{0xF0, 0x10, 0x20, 0x40, 0x40},		
-		{0xF0, 0x90, 0xF0, 0x90, 0xF0},		
-		{0xF0, 0x90, 0xF0, 0x10, 0xF0},		
-		{0xF0, 0x90, 0xF0, 0x90, 0x90},		
-		{0xE0, 0x90, 0xE0, 0x90, 0xE0},		
-		{0xF0, 0x80, 0x80, 0x80, 0xF0},		
-		{0xE0, 0x90, 0x90, 0x90, 0xE0},		
-		{0xF0, 0x80, 0xF0, 0x80, 0xF0},
-		{0xF0, 0x80, 0xF0, 0x80, 0x80}
-	};
 
 public:
 	chip8cpu();
 	~chip8cpu();
+
+	void initialise();
 
 	void clock();
 public:
@@ -84,6 +68,10 @@ public:
 
 	// Address register
 	uint16_t I;
+
+	// Timer registers
+	uint8_t DelayTimer;
+	uint8_t SoundTimer;
 
 	// Program counter
 	uint16_t pc;
@@ -141,6 +129,21 @@ public:
 	// Set reg ref to random number ANDed with value provided
 	void RND();
 	// Display, not using yet
-	void DRW();
+	void DRW(); // FINISH LATER
+	// Skip next instruction if the key associated with reg ref is pressed
+	void SKP(); // FINISH LATER
+	// Skip next instruction if the key associated with reg ref is not pressed
+	void SKNP(); // FINISH LATER
+	// Set reg ref to timer value
+	void LD_4();
+	// Pause execution until key is pressed then store key val in ref ref
+	void LD_5(); // FINISH LATER
+	// Set delay timer to reg ref
+	void LD_6();
+	// Set sound timer to reg ref
+	void LD_7();
+	// set register I to I + reg ref
+	void ADD_3();
+	// Set reg I to mem addr of sprite for digit
 };
 

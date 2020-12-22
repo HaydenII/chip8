@@ -1,10 +1,2 @@
-﻿  bus.cpp
-  chip8cpu.cpp
-C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Chip8Emulator\chip8cpu.cpp(17,11): warning C4101: 'mem_pointer': unreferenced local variable
-C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Chip8Emulator\chip8cpu.cpp(196,25): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
-C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Chip8Emulator\chip8cpu.cpp(224,25): warning C4554: '&': check operator precedence for possible error; use parentheses to clarify precedence
-C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Chip8Emulator\chip8cpu.cpp(259,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  main.cpp
-  memory.cpp
-  Generating Code...
+﻿  main.cpp
   Chip8Emulator.vcxproj -> C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Debug\Chip8Emulator.exe

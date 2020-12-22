@@ -2,11 +2,16 @@
 
 int main() {
 	Bus bus;
+	bus.cpu.initialise();
 
-	bus.cpu.write(0xFFF, 0x010);
+	//bus.cpu.write(0xFFF, 0x010);
 
-	std::cout << int(bus.cpu.read(0x0FFF)) << std::endl;
-	std::cout << int(bus.cpu.read(0x0EFF)) << std::endl;
+	uint8_t memptr = 0x0000;
+	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
 
 	return 1;
 }
