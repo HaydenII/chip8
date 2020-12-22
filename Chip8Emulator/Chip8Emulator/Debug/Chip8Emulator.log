@@ -1,4 +1,2 @@
 ﻿  main.cpp
-C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Chip8Emulator\main.cpp(7,40): warning C4305: 'argument': truncation from 'int' to 'uint8_t'
-C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Chip8Emulator\main.cpp(7,31): warning C4309: 'argument': truncation of constant value
   Chip8Emulator.vcxproj -> C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Debug\Chip8Emulator.exe

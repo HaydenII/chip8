@@ -3,6 +3,10 @@
 #include <string>
 #include <vector>
 
+// For the random operation
+#include <cstdlib>
+#include <ctime>
+
 class Bus;
 
 /*
@@ -20,6 +24,9 @@ private:
 	uint16_t addr;
 
 	uint16_t ReadNext2Bytes();
+public:
+	uint64_t display[32]{ 0 };
+
 public:
 	chip8cpu();
 	~chip8cpu();
@@ -39,6 +46,7 @@ public:
 	void ConnectBus(Bus* busptr);
 
 	// Registers - Not put in an array for clarity - might change later
+	uint8_t V0;
 	uint8_t V1;
 	uint8_t V2;
 	uint8_t V3;
@@ -67,15 +75,6 @@ public:
 	uint16_t stack[16];
 	inline void DecrementStackPointer();
 
-	// Array of pointers to the opcode functions
-	struct INSTRUCTION {
-		std::string name;
-		uint8_t(chip8cpu::* operate)(void) = nullptr;
-	};
-
-	// All instructions are stored in order,
-	std::vector<INSTRUCTION> ins;
-
 	// Jump to code at address
 	void SYS();
 	// Clear the display - implement later
@@ -103,5 +102,27 @@ public:
 	void OR();
 	// Set reg1 to val after performing a bitwise AND on the values
 	void AND();
+	// Set reg1 to val after performing a bitwise XOR on the values
+	void XOR();
+	// Add reg2 to reg1 if result is greater than 8bits set vf to 1
+	void ADD_2();
+	// Subtract reg2 from reg1 if result wrapped around set vf to 1
+	void SUB();
+	// If the least sig bit of reg referenced is 1 set vf to 1 then devide reg ref by 2
+	void SHR();
+	// Subtract reg1 from reg2 if result will not wrapped around set vf to 1
+	void SUBN();
+	// If most sig bit of reg ref is 1 set vf to 1 then multiply reg by 2
+	void SHL();
+	// Compare reg1 to reg2 if != increment pc by 2
+	void SNE_2();
+	// Set the value of reg I to 12 bit val provided
+	void LD_3();
+	// Set the program counter to value provided + the value in reg0
+	void JP_2();
+	// Set reg ref to random number ANDed with value provided
+	void RND();
+	// Display, not using yet
+	void DRW();
 };
 

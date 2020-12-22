@@ -189,3 +189,81 @@ void chip8cpu::SUB()
 		regs[0xF] = 0x00;
 	}
 }
+
+void chip8cpu::SHR()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+
+	if (regX & 0x01 == 0x01) {
+		regs[0xF] = 0x01;
+	}
+	else {
+		regs[0xF] = 0x00;
+	}
+	regs[((instruction16Bit >> 8) & 0x000F)] /= 2;
+}
+
+void chip8cpu::SUBN()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+
+	if (regY > regX) {
+		regs[0xF] = 0x01;
+	}
+	else {
+		regs[0xF] = 0x00;
+	}
+
+	regs[((instruction16Bit >> 4) & 0x000F)] -= regX;
+}
+
+void chip8cpu::SHL()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+
+	if (regX & 0x80 == 0x80) {
+		regs[0xF] = 0x01;
+	}
+	else {
+		regs[0xF] = 0x00;
+	}
+	regs[((instruction16Bit >> 8) & 0x000F)] *= 2;
+}
+
+void chip8cpu::SNE_2()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+
+	if (regX != regY) {
+		pc += 2;
+	}
+}
+
+void chip8cpu::LD_3()
+{
+	uint16_t val = regs[(instruction16Bit & 0x0FFF)];
+
+	I = val;
+}
+
+void chip8cpu::JP_2()
+{
+	pc = (instruction16Bit & 0x0FFF) + regs[0x00];
+}
+
+void chip8cpu::RND() {
+	uint8_t val = (instruction16Bit & 0x00FF);
+
+	// seed the random generator
+	srand(time(NULL));
+	uint8_t ran = rand();
+
+	regs[((instruction16Bit >> 8) & 0x000F)] = ran + val;
+}
+
+void chip8cpu::DRW()
+{
+}
+
