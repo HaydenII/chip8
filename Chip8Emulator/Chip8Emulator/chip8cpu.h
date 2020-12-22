@@ -144,6 +144,7 @@ public:
 	void LD_7();
 	// set register I to I + reg ref
 	void ADD_3();
-	// Set reg I to mem addr of sprite for digit
+	// Set reg I to mem addr of sprite for digit located in reg ref
+	void LD_8();
 };
 

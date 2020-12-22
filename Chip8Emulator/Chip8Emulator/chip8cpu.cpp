@@ -55,6 +55,7 @@ void chip8cpu::initialise()
 void chip8cpu::clock()
 {
 	instruction16Bit = ReadNext2Bytes();
+	uint8_t lb = instruction16Bit & 0x0001;
 	if (instruction16Bit == 0x00E0) { SYS(); }
 }
 
@@ -318,5 +319,37 @@ void chip8cpu::LD_7()
 
 void chip8cpu::ADD_3()
 {
-	I += regs[((instruction16Bit >> 8) & 0x000F)];
+	I += (uint16_t)regs[((instruction16Bit >> 8) & 0x000F)];
 }
+
+void chip8cpu::LD_8()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	
+	I = (uint16_t)(regX * 0X05);
+}
+
+void chip8cpu::LD_9()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	write(I, (regX & 0x03));
+	write(I + 1, (regX & 0x02));
+	write(I + 2, (regX & 0x01));
+}
+
+void chip8cpu::LD_10()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	for (int j = 0; j <= regX; j++) {
+		write(I+=j, regs[j]);
+	}
+}
+
+void chip8cpu::LD_11()
+{
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	for (int j = 0; j <= regX; j++) {
+		regs[I += j] = read(I += j);
+	}
+}
+
