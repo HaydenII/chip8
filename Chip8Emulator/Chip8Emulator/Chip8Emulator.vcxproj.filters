@@ -27,6 +27,9 @@
     <ClInclude Include="bus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="olcPixelGameEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="chip8cpu.cpp">
