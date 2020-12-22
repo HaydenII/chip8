@@ -1,7 +1,6 @@
 #include "main.h"
 
 int main() {
-	std::cout << int(display) << std::endl;
 	Bus bus;
 
 	bus.cpu.write(0xFFF, 0x010);

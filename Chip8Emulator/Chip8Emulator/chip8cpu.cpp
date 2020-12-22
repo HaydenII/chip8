@@ -17,19 +17,6 @@ chip8cpu::chip8cpu()
 	uint16_t mem_pointer;
 
 	using a = chip8cpu;
-
-	// For later, loads sprites into memory
-	//uint8_t sprites[5][16] = {
-	//	{0xF0, 0x90, 0x90, 0x90, 0xF0},
-	//	{0x20, 0x60, 0x20, 0x20, 0x70},
-	//	{0xF0, 0x10, 0xF0, 0x80, 0xF0},
-	//	{0xF0, 0x10, 0xF0, 0x10, 0xF0},
-	//	{0x90, 0x90, 0xF0, 0x10, 0x10}
-	//};
-
-	//for (uint16_t MemPtr = 0x000; MemPtr < 0x200; MemPtr++) {
-	//	write(MemPtr, sprites[0]);
-	//}
 }
 
 chip8cpu::~chip8cpu()
@@ -265,5 +252,6 @@ void chip8cpu::RND() {
 
 void chip8cpu::DRW()
 {
+
 }
 
