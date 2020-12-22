@@ -1,6 +1,17 @@
 #include "chip8cpu.h"
 #include "bus.h"
 
+uint16_t chip8cpu::ReadNext2Bytes()
+{
+	pc++;
+	hi = read(pc);
+	pc++;
+	lo = read(pc);
+	pc++;
+
+	return (hi << 8) | lo;
+}
+
 chip8cpu::chip8cpu()
 {
 	uint16_t mem_pointer;
@@ -27,7 +38,8 @@ chip8cpu::~chip8cpu()
 
 void chip8cpu::clock()
 {
-	opcode = read(pc);
+	instruction16Bit = ReadNext2Bytes();
+	if (instruction16Bit == 0x00E0) { SYS(); }
 }
 
 uint8_t chip8cpu::read(uint16_t addr)
@@ -54,31 +66,23 @@ inline void chip8cpu::DecrementStackPointer()
 
 void chip8cpu::SYS()
 {
-	pc++;
-	hi = read(pc);
-	pc++;
-	lo = read(pc);
-	pc++;
+	pc = (instruction16Bit & 0x0FFF);
+}
 
-	pc = (hi << 8) | lo;
-
+// UNINPLEMENTED
+void chip8cpu::CLS()
+{
 }
 
 void chip8cpu::RET()
 {
 	pc = stack[sp];
-	DecrementStackPointer;
+	DecrementStackPointer();
 }
 
 void chip8cpu::JP()
 {
-	pc++;
-	hi = read(pc);
-	pc++;
-	lo = read(pc);
-	pc++;
-
-	pc = (hi << 8) | lo;
+	pc = (instruction16Bit & 0x0FFF);
 }
 
 void chip8cpu::CALL() 

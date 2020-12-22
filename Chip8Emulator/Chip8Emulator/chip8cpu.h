@@ -18,6 +18,8 @@ private:
 	uint16_t hi;
 	uint16_t lo;
 	uint16_t addr;
+
+	uint16_t ReadNext2Bytes();
 public:
 	chip8cpu();
 	~chip8cpu();
@@ -30,7 +32,7 @@ public:
 	// The data that has been fetched before the operation
 	uint8_t fetched;
 	// The opcode fetched at the beginning of the clock cycle
-	uint8_t opcode;
+	uint16_t instruction16Bit;
 
 	// Bus pointer
 	Bus* bus;
