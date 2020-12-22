@@ -1,17 +1,6 @@
 #include "chip8cpu.h"
 #include "bus.h"
 
-uint16_t chip8cpu::ReadNext2Bytes()
-{
-	pc++;
-	hi = read(pc);
-	pc++;
-	lo = read(pc);
-	pc++;
-
-	return (hi << 8) | lo;
-}
-
 chip8cpu::chip8cpu()
 {
 }
@@ -54,9 +43,130 @@ void chip8cpu::initialise()
 
 void chip8cpu::clock()
 {
-	instruction16Bit = ReadNext2Bytes();
-	uint8_t lb = instruction16Bit & 0x0001;
-	if (instruction16Bit == 0x00E0) { SYS(); }
+	pc++;
+	hi = read(pc);
+	pc++;
+	lo = read(pc);
+	pc++;
+
+	instruction16Bit = (hi << 8) | lo;
+
+	switch (hi >> 4) {
+	case (0):
+		switch (hi >> 4) {
+		case (0):
+			// code block
+			break;
+		}
+	case (1):
+		JP();
+		break;
+	case (2):
+		CALL();
+		break;
+	case (3):
+		SE();
+		break;
+	case (4):
+		SNE();
+		break;
+	case (5):
+		SE_2();
+		break;
+	case (6):
+		LD();
+		break;
+	case (7):
+		ADD();
+		break;
+	case (8):
+		switch (lo & 0x0F) {
+		case (0x00):
+			LD_2();
+			break;
+		case (0x01):
+			OR();
+			break;
+		case (0x02):
+			AND();
+			break;
+		case (0x03):
+			XOR();
+			break;
+		case (0x04):
+			ADD_2();
+			break;
+		case (0x05):
+			SUB();
+			break;
+		case (0x06):
+			SHR();
+			break;
+		case (0x07):
+			SUBN();
+			break;
+		case (0x0E):
+			SHL();
+			break;
+		}
+	case (9):
+		SNE_2();
+		break;
+	case (0xA):
+		LD_3();
+		break;
+	case (0xB):
+		JP_2();
+		break;
+	case (0xC):
+		RND();
+		break;
+	case (0xD):
+		DRW();
+		break;
+	case (0xE):
+		switch (lo & 0x0F) {
+		case(0x0E):
+			SKP();
+			break;
+		case(0x01):
+			SKNP();
+			break;
+		}
+	case (0xF):
+		switch (lo) {
+		case(0x07):
+			LD_4();
+			break;
+		case(0x0A):
+			LD_5();
+			break;
+		case(0x15):
+			LD_6();
+			break;
+		case(0x18):
+			LD_7();
+			break;
+		case(0x1E):
+			ADD_3();
+			break;
+		case(0x29):
+			LD_8();
+			break;
+		case(0x33):
+			LD_9();
+			break;
+		case(0x55):
+			LD_10();
+			break;
+		case(0x65):
+			LD_11();
+			break;
+		}
+		break;
+	default:
+		// code block
+	}
 }
 
 uint8_t chip8cpu::read(uint16_t addr)
@@ -86,7 +196,6 @@ void chip8cpu::SYS()
 	pc = (instruction16Bit & 0x0FFF);
 }
 
-// UNINPLEMENTED
 void chip8cpu::CLS()
 {
 }
