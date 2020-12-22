@@ -38,7 +38,7 @@ int main() {
 	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
 
 	C8Display game;
-	game.Construct((64), (32), 16, 16);
+	game.Construct(64, 32, 16, 16);
 	game.Start();
 
 	return 1;
