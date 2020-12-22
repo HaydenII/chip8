@@ -39,6 +39,8 @@ void chip8cpu::initialise()
 			bus->mem.write(MemPtr++, byte);
 		}
 	}
+	// Point to beginning of program
+	pc = 0x200;
 }
 
 void chip8cpu::clock()
@@ -165,7 +167,7 @@ void chip8cpu::clock()
 		}
 		break;
 	default:
-		// code block
+		break;
 	}
 }
 
@@ -399,6 +401,10 @@ void chip8cpu::DRW()
 void chip8cpu::SKP()
 {
 	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+}
+
+void chip8cpu::SKNP()
+{
 }
 
 void chip8cpu::LD_4()
