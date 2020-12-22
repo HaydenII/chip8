@@ -23,7 +23,6 @@ private:
 	uint16_t lo;
 	uint16_t addr;
 
-	uint16_t ReadNext2Bytes();
 public:
 	uint64_t display[32]{ 0 };
 
@@ -146,5 +145,11 @@ public:
 	void ADD_3();
 	// Set reg I to mem addr of sprite for digit located in reg ref
 	void LD_8();
+	// Take decimal value of reg ref and place the hundreds digit in memory at location in I, tens in i+1 ones at i+2
+	void LD_9(); // FINISH LATER
+	// Store register v0 .. vN in memory starting at location I
+	void LD_10();
+	// Read register v0.. vN from memory starting at location I
+	void LD_11();
 };
 
