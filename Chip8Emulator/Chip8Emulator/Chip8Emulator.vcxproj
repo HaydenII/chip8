@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bus.h" />
     <ClInclude Include="chip8cpu.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="memory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bus.cpp" />
     <ClCompile Include="chip8cpu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />

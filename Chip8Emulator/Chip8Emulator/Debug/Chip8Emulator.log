@@ -1,2 +1,6 @@
-﻿  main.cpp
+﻿  bus.cpp
+  chip8cpu.cpp
+  main.cpp
+  memory.cpp
+  Generating Code...
   Chip8Emulator.vcxproj -> C:\Users\hayde\Documents\GitHub\chip8\Chip8Emulator\Debug\Chip8Emulator.exe
