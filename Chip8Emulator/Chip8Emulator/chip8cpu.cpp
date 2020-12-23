@@ -9,7 +9,7 @@ chip8cpu::~chip8cpu()
 {
 }
 
-void chip8cpu::initialise()
+void chip8cpu::reset()
 {
 	/*
 	* LOADING FONSET IN STARTING AT 0X0000
@@ -39,13 +39,28 @@ void chip8cpu::initialise()
 			bus->mem.write(MemPtr++, byte);
 		}
 	}
+
 	// Point to beginning of program
 	pc = 0x200;
+
+	// Reset the registers
+	for (auto& reg : regs) {
+		reg = 0x00;
+	}
+	I = 0x0000;
+
+	DelayTimer = 60;
+	SoundTimer = 60;
+
+	// Reset the stack
+	sp = 0;
+	for (auto& layer : stack) {
+		layer = 0x0000;
+	}
 }
 
 void chip8cpu::clock()
 {
-	pc++;
 	hi = read(pc);
 	pc++;
 	lo = read(pc);
@@ -393,9 +408,18 @@ void chip8cpu::RND() {
 
 void chip8cpu::DRW()
 {
+	// Position on the screen is stored in the registers referenced in the instruction
+	uint8_t x = regs[(instruction16Bit >> 8) & 0x00F]; // x Coordinate
+	uint8_t y = regs[(instruction16Bit >> 4) & 0x00F]; // y Coordinate
+
 	// Starting memory location
 	uint16_t sMemLoc = I;
 	uint8_t BytesToRead = (instruction16Bit & 0x000F);
+
+	for (int i = 0; i < BytesToRead; i++) {
+		uint64_t sprite_row = read(I + i);
+		bus->display[i] ^= sprite_row;
+	}
 }
 
 void chip8cpu::SKP()

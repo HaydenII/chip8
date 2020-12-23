@@ -3,9 +3,13 @@
 class C8Display : public olc::PixelGameEngine
 {
 public:
+	Bus* bus;
 	C8Display()
 	{
 		sAppName = "Example";
+	}
+	void ConnectBus(Bus* InPtr) {
+		bus = InPtr;
 	}
 
 public:
@@ -17,10 +21,18 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		// called once per frame
-		for (int x = 0; x < ScreenWidth(); x++)
-			for (int y = 0; y < ScreenHeight(); y++)
-				Draw(x, y, olc::Pixel(rand() % 256, rand() % 256, rand() % 256));
+		// Draw the display array connected to the bus
+		for (int x = 0; x < 32; x++) {
+			uint64_t TempDisplay = (*bus).display[x];
+			for (int y = 0; y < 64; y++) {
+				if ((TempDisplay >> (64 - y)) & 0x0000000000000001) {
+					Draw(y, x, olc::WHITE);
+				}
+				else {
+					Draw(y, x, olc::BLACK);
+				}
+			}
+		}
 		return true;
 	}
 };
@@ -28,18 +40,24 @@ public:
 
 int main() {
 	Bus bus;
-	bus.cpu.initialise();
+	bus.cpu.reset();
 
-	uint8_t memptr = 0x0000;
-	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	bus.cpu.I = 0x0000;
+	bus.cpu.write(0x200, 0xD0);
+	bus.cpu.write(0x201, 0x05);
+	bus.cpu.clock();
 
 	C8Display game;
+	game.ConnectBus(&bus);
 	game.Construct(64, 32, 16, 16);
 	game.Start();
+
+	//uint8_t memptr = 0x0000;
+	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
+	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
 
 	return 1;
 }
