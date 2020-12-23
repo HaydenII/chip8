@@ -402,7 +402,7 @@ void chip8cpu::RND() {
 	srand(time(NULL));
 	uint8_t ran = rand();
 
-	regs[((instruction16Bit >> 8) & 0x000F)] = ran + val;
+	regs[((instruction16Bit >> 8) & 0x000F)] = (ran & val);
 }
 
 void chip8cpu::DRW()
