@@ -6,7 +6,7 @@ public:
 	Bus* bus;
 	C8Display()
 	{
-		sAppName = "Example";
+		sAppName = "Chip 8 Emulator";
 	}
 	void ConnectBus(Bus* InPtr) {
 		bus = InPtr;
@@ -42,22 +42,17 @@ int main() {
 	Bus bus;
 	bus.cpu.reset();
 
+	bus.cpu.regs[2] = 0;
+	bus.cpu.regs[6] = 0;
 	bus.cpu.I = 0x0000;
-	bus.cpu.write(0x200, 0xD0);
-	bus.cpu.write(0x201, 0x05);
+	bus.cpu.write(0x200, 0xD2);
+	bus.cpu.write(0x201, 0x65);
 	bus.cpu.clock();
 
 	C8Display game;
 	game.ConnectBus(&bus);
 	game.Construct(64, 32, 16, 16);
 	game.Start();
-
-	//uint8_t memptr = 0x0000;
-	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
-	//std::cout << std::bitset<8>(bus.cpu.read(memptr++)) << std::endl;
 
 	return 1;
 }

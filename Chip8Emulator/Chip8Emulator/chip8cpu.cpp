@@ -408,17 +408,19 @@ void chip8cpu::RND() {
 
 void chip8cpu::DRW()
 {
-	// Position on the screen is stored in the registers referenced in the instruction
-	uint8_t x = regs[(instruction16Bit >> 8) & 0x00F]; // x Coordinate
-	uint8_t y = regs[(instruction16Bit >> 4) & 0x00F]; // y Coordinate
-
 	// Starting memory location
 	uint16_t sMemLoc = I;
 	uint8_t BytesToRead = (instruction16Bit & 0x000F);
 
+	// Position on the screen is stored in the registers referenced in the instruction
+	uint8_t x = regs[(instruction16Bit >> 8) & 0x00F]; // x Coordinate
+	uint8_t y = regs[(instruction16Bit >> 4) & 0x00F]; // y Coordinate
+
 	for (int i = 0; i < BytesToRead; i++) {
 		uint64_t sprite_row = read(I + i);
-		bus->display[i] ^= sprite_row;
+		//auto s = std::bitset<64>(sprite_row);
+		sprite_row = sprite_row << (56-x);
+		bus->display[y++] ^= sprite_row;
 	}
 }
 

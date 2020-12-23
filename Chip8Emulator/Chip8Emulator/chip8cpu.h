@@ -6,6 +6,7 @@
 // For the random operation
 #include <cstdlib>
 #include <ctime>
+#include <bitset>
 
 class Bus;
 
