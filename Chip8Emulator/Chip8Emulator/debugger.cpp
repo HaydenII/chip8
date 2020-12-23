@@ -27,119 +27,131 @@
 */
 
 std::string instruction_name(uint8_t hi, uint8_t lo) {
-	switch (hi >> 4) {
-	case (0):
-		switch (hi >> 4) {
+	uint16_t instruction16Bit = (hi << 8) | lo;
+
+	// Highest order bits
+	switch (instruction16Bit >> 12) {
+	case (0x0000):
+		// Lowest order bits
+		switch (instruction16Bit & 0x000F) {
 		case (0):
-			// code block
+			return "CLS()";
+			break;
+		case (0xE):
+			return "RET()";
+			break;
+		default:
+			return "SYS()";
 			break;
 		}
-	case (1):
-		return "JP";
+	case (0x1):
+		return "JP()";
 		break;
-	case (2):
-		return "CALL";
+	case (0x2):
+		return "CALL()";
 		break;
-	case (3):
-		return "SE";
+	case (0x3):
+		return "SE()";
 		break;
-	case (4):
-		return "SNE";
+	case (0x4):
+		return "SNE()";
 		break;
-	case (5):
-		return "SE_2";
+	case (0x5):
+		return "SE_2()";
 		break;
-	case (6):
-		return "LD";
+	case (0x6):
+		return "LD()";
 		break;
-	case (7):
-		return "ADD";
+	case (0x7):
+		return "ADD()";
 		break;
-	case (8):
-		switch (lo & 0x0F) {
-		case (0x00):
-			return "LD_2";
+	case (0x8):
+		// Lowest order bits
+		switch (instruction16Bit & 0x000F) {
+		case (0x0):
+			return "LD_2()";
 			break;
-		case (0x01):
-			return "OR";
+		case (0x1):
+			return "OR()";
 			break;
-		case (0x02):
-			return "AND";
+		case (0x2):
+			return "AND()";
 			break;
-		case (0x03):
-			return "XOR";
+		case (0x3):
+			return "XOR()";
 			break;
-		case (0x04):
-			return "ADD_2";
+		case (0x4):
+			return "ADD_2()";
 			break;
-		case (0x05):
-			return "SUB";
+		case (0x5):
+			return "SUB()";
 			break;
-		case (0x06):
-			return "SHR";
+		case (0x6):
+			return "SHR()";
 			break;
-		case (0x07):
-			return "SUBN";
+		case (0x7):
+			return "SUBN()";
 			break;
-		case (0x0E):
-			return "SHL";
+		case (0xE):
+			return "SHL()";
 			break;
 		}
-	case (9):
-		return "SNE_2";
+	case (0x9):
+		return "SNE_2()";
 		break;
 	case (0xA):
-		return "LD_3";
+		return "LD_3()";
 		break;
 	case (0xB):
-		return "JP_2";
+		return "JP_2()";
 		break;
 	case (0xC):
-		return "RND";
+		return "RND()";
 		break;
 	case (0xD):
-		return "DRW";
+		return "DRW()";
 		break;
 	case (0xE):
-		switch (lo & 0x0F) {
-		case(0x0E):
-			return "SKP";
+		// Lowest order bits
+		switch (instruction16Bit & 0x000F) {
+		case(0xE):
+			return "SKP()";
 			break;
-		case(0x01):
-			return "SKNP";
+		case(0x1):
+			return "SKNP()";
 			break;
 		}
 	case (0xF):
-		switch (lo) {
+		// 2 lowest order bits
+		switch (instruction16Bit & 0x00FF) {
 		case(0x07):
-			return "LD_4";
+			return "LD_4()";
 			break;
 		case(0x0A):
-			return "LD_5";
+			return "LD_5()";
 			break;
 		case(0x15):
-			return "LD_6";
+			return "LD_6()";
 			break;
 		case(0x18):
-			return "LD_7";
+			return "LD_7()";
 			break;
 		case(0x1E):
-			return "ADD_3";
+			return "ADD_3()";
 			break;
 		case(0x29):
-			return "LD_8";
+			return "LD_8()";
 			break;
 		case(0x33):
-			return "LD_9";
+			return "LD_9()";
 			break;
 		case(0x55):
-			return "LD_10";
+			return "LD_10()";
 			break;
 		case(0x65):
-			return "LD_11";
+			return "LD_11()";
 			break;
 		}
-		break;
 	default:
 		break;
 	}

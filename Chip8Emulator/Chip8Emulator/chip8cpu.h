@@ -45,7 +45,7 @@ public:
 	void ConnectBus(Bus* busptr);
 
 	// Registers - 0 .. F
-	uint8_t regs[0xF];
+	uint8_t regs[0xF] = {0};
 
 	// Address register
 	uint16_t I;

@@ -70,65 +70,76 @@ void chip8cpu::clock()
 
 	instruction16Bit = (hi << 8) | lo;
 
-	switch (hi >> 4) {
-	case (0):
-		switch (hi >> 4) {
+	// Highest order bits
+	switch (instruction16Bit >> 12) {
+	case (0x0000):
+		// Lowest order bits
+		switch (instruction16Bit & 0x000F) {
 		case (0):
-			// code block
+			CLS();
+			break;
+		case (0xE):
+			RET();
+			break;
+		default:
+			SYS();
 			break;
 		}
-	case (1):
+		break;
+	case (0x1):
 		JP();
 		break;
-	case (2):
+	case (0x2):
 		CALL();
 		break;
-	case (3):
+	case (0x3):
 		SE();
 		break;
-	case (4):
+	case (0x4):
 		SNE();
 		break;
-	case (5):
+	case (0x5):
 		SE_2();
 		break;
-	case (6):
+	case (0x6):
 		LD();
 		break;
-	case (7):
+	case (0x7):
 		ADD();
 		break;
-	case (8):
-		switch (lo & 0x0F) {
-		case (0x00):
+	case (0x8):
+		// Lowest order bits
+		switch (instruction16Bit & 0x000F) {
+		case (0x0):
 			LD_2();
 			break;
-		case (0x01):
+		case (0x1):
 			OR();
 			break;
-		case (0x02):
+		case (0x2):
 			AND();
 			break;
-		case (0x03):
+		case (0x3):
 			XOR();
 			break;
-		case (0x04):
+		case (0x4):
 			ADD_2();
 			break;
-		case (0x05):
+		case (0x5):
 			SUB();
 			break;
-		case (0x06):
+		case (0x6):
 			SHR();
 			break;
-		case (0x07):
+		case (0x7):
 			SUBN();
 			break;
-		case (0x0E):
+		case (0xE):
 			SHL();
 			break;
 		}
-	case (9):
+		break;
+	case (0x9):
 		SNE_2();
 		break;
 	case (0xA):
@@ -144,16 +155,19 @@ void chip8cpu::clock()
 		DRW();
 		break;
 	case (0xE):
-		switch (lo & 0x0F) {
-		case(0x0E):
+		// Lowest order bits
+		switch (instruction16Bit & 0x000F) {
+		case(0xE):
 			SKP();
 			break;
-		case(0x01):
+		case(0x1):
 			SKNP();
 			break;
 		}
+		break;
 	case (0xF):
-		switch (lo) {
+		// 2 lowest order bits
+		switch (instruction16Bit & 0x00FF) {
 		case(0x07):
 			LD_4();
 			break;
@@ -217,7 +231,9 @@ void chip8cpu::SYS()
 
 void chip8cpu::CLS()
 {
-	*bus->display = { 0 };
+	for (auto& pixel : bus->display) {
+		pixel = 0;
+	}
 }
 
 void chip8cpu::RET()
