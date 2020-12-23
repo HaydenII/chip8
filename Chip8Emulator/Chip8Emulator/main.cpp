@@ -23,7 +23,7 @@ public:
 	{
 		if (IsFocused())
 		{
-			if (GetKey(olc::Key::SPACE).bPressed)
+			if (GetKey(olc::Key::SPACE).bHeld || GetKey(olc::Key::SPACE).bPressed)
 			{
 				bus->cpu.clock();
 			}
@@ -45,8 +45,23 @@ public:
 	}
 };
 
+std::vector<uint8_t> readFile(const char* filename)
+{
+	// open the file:
+	std::basic_ifstream<uint8_t> file(filename, std::ios::binary);
+
+	// read the data:
+	return std::vector<uint8_t>((std::istreambuf_iterator<uint8_t>(file)),
+		std::istreambuf_iterator<uint8_t>());
+}
+
 
 int main() {
+
+	std::vector<uint8_t> program = readFile("C:\\Users\\hayde\\Downloads\\maze.ch8");
+
+
+
 	Bus bus;
 	bus.cpu.reset();
 
@@ -56,45 +71,16 @@ int main() {
 	* 3. Write draw location to register 1
 	* 4. Draw sprites
 	*/
-	uint16_t program[] = { 0xA019, 0x600F, 0x610F, 0xD015, 0xA005, 0x6009, 0x610F, 0xD015 };
+	//uint16_t program[] = { 0xA019, 0x600F, 0x610F, 0xD015, 0xA005, 0x6009, 0x610F, 0xD015 };
 
 	uint16_t WritePtr = 0x200;
 	for (auto& instr : program) {
-		uint8_t hi = instr >> 8;
-		uint8_t lo = instr & 0x00FF;
+		//uint8_t hi = instr >> 8;
+		//uint8_t lo = instr & 0x00FF;
 
-		bus.mem.write(WritePtr++, hi);
-		bus.mem.write(WritePtr++, lo);
+		bus.mem.write(WritePtr++, instr);
+		//bus.mem.write(WritePtr++, lo);
 	}
-
-	//// INSTRUCTION 0
-	//// Write sprite location to I register
-	//bus.cpu.write(0x200, 0xA0);
-	//bus.cpu.write(0x201, 0x19);
-
-	//// INSTRUCTION 1
-	//// Write sprite draw location to registers 0
-	//bus.cpu.write(0x202, 0x60);
-	//bus.cpu.write(0x203, 0x0F);
-
-	//// Write sprite draw location to registers 1
-	//bus.cpu.write(0x204, 0x61);
-	//bus.cpu.write(0x205, 0x0F);
-
-	//// Draw the sprites in registers 0 and 1
-	//bus.cpu.write(0x206, 0xD0);
-	//bus.cpu.write(0x207, 0x15);
-
-	//// INSTRUCTION 2
-	//bus.cpu.write(0x204, 0xA0);
-	//bus.cpu.write(0x205, 0x05);
-
-	//// INSTRUCTION 3
-	//bus.cpu.regs[2] = 20;
-	//bus.cpu.regs[3] = 20;
-	//bus.cpu.write(0x206, 0xD2);
-	//bus.cpu.write(0x207, 0x35);
-	////bus.cpu.clock();
 
 	C8Display game;
 	game.ConnectBus(&bus);
