@@ -3,6 +3,7 @@
 
 chip8cpu::chip8cpu()
 {
+	srand(time(NULL));
 }
 
 chip8cpu::~chip8cpu()
@@ -42,6 +43,7 @@ void chip8cpu::reset()
 
 	// Point to beginning of program
 	pc = 0x200;
+	sp = 0x00;
 
 	// Reset the registers
 	for (auto& reg : regs) {
@@ -399,9 +401,8 @@ void chip8cpu::RND() {
 	uint8_t val = (instruction16Bit & 0x00FF);
 
 	// seed the random generator
-	srand(time(NULL));
 	uint8_t ran = rand();
-
+	auto res = (ran & val);
 	regs[((instruction16Bit >> 8) & 0x000F)] = (ran & val);
 }
 

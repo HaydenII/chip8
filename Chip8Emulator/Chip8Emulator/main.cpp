@@ -22,8 +22,13 @@ public:
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		if (IsFocused())
-		{
+		{ // 0xE0A2
 			if (/*GetKey(olc::Key::SPACE).bHeld || */GetKey(olc::Key::SPACE).bPressed)
+			{
+				bus->cpu.clock();
+				print_cpu_state(&bus->cpu);
+			}
+			if (GetKey(olc::Key::CTRL).bHeld)
 			{
 				bus->cpu.clock();
 				print_cpu_state(&bus->cpu);

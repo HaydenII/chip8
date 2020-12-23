@@ -151,12 +151,15 @@ void print_cpu_state(chip8cpu* inCPU) {
 	cout << "------------------------------------------" << endl;
 
 	for (int i = 0; i < 16; i++) {
-		cout << "Reg " << i <<	"	= " << int(inCPU->regs[i]) << endl;
+		cout << "Reg " << i <<	"	= " << hex << (int)inCPU->regs[i] << endl;
 	}
 
 	cout << endl << "I " << "	= " << inCPU->I << endl;
 	cout << endl << "PC " << "	= " << inCPU->pc << endl;
-	cout << "SP " << "	= " << inCPU->sp << endl;
+	cout << "SP " << "	= ";
+	for (int i = 0; i < 16; i++) {
+		cout << " " << inCPU->stack[i] << ", ";
+	}
 
 	uint16_t lo = inCPU->read(inCPU->pc - 1);
 	uint16_t hi = inCPU->read(inCPU->pc - 2);

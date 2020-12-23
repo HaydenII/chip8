@@ -64,7 +64,7 @@ public:
 
 	// Jump to code at address
 	void SYS();
-	// Clear the display - implement later
+	// Clear the display
 	void CLS();
 	// Set pc to address at stack pointer
 	void RET();
