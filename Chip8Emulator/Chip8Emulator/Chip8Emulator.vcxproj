@@ -141,7 +141,7 @@
   <ItemGroup>
     <ClInclude Include="bus.h" />
     <ClInclude Include="chip8cpu.h" />
-    <ClInclude Include="decompiler.h" />
+    <ClInclude Include="debugger.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="olcPixelGameEngine.h" />
@@ -149,7 +149,7 @@
   <ItemGroup>
     <ClCompile Include="bus.cpp" />
     <ClCompile Include="chip8cpu.cpp" />
-    <ClCompile Include="decompiler.cpp" />
+    <ClCompile Include="debugger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
   </ItemGroup>
