@@ -215,6 +215,7 @@ void chip8cpu::SYS()
 
 void chip8cpu::CLS()
 {
+	*bus->display = { 0 };
 }
 
 void chip8cpu::RET()
@@ -386,9 +387,7 @@ void chip8cpu::SNE_2()
 
 void chip8cpu::LD_3()
 {
-	uint16_t val = regs[(instruction16Bit & 0x0FFF)];
-
-	I = val;
+	I = (instruction16Bit & 0x0FFF);
 }
 
 void chip8cpu::JP_2()
@@ -409,7 +408,6 @@ void chip8cpu::RND() {
 void chip8cpu::DRW()
 {
 	// Starting memory location
-	uint16_t sMemLoc = I;
 	uint8_t BytesToRead = (instruction16Bit & 0x000F);
 
 	// Position on the screen is stored in the registers referenced in the instruction
@@ -418,7 +416,6 @@ void chip8cpu::DRW()
 
 	for (int i = 0; i < BytesToRead; i++) {
 		uint64_t sprite_row = read(I + i);
-		//auto s = std::bitset<64>(sprite_row);
 		sprite_row = sprite_row << (56-x);
 		bus->display[y++] ^= sprite_row;
 	}

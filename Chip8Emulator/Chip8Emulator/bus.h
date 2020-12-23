@@ -13,5 +13,6 @@ public:
 	chip8cpu cpu;
 	memory mem;
 	uint64_t display[32]{ 0 };
+
 };
 
