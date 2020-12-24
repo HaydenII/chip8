@@ -338,13 +338,13 @@ void chip8cpu::ADD_2()
 
 void chip8cpu::SUB()
 {
-	uint8_t OregX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t XVal = regs[((instruction16Bit >> 8) & 0x000F)];
 
-	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+	uint8_t YVal = regs[((instruction16Bit >> 4) & 0x000F)];
 
-	regs[((instruction16Bit >> 8) & 0x000F)] += regY;
+	regs[((instruction16Bit >> 8) & 0x000F)] -= YVal;
 
-	if (regs[((instruction16Bit >> 8) & 0x000F)] > OregX) {
+	if (XVal > YVal) {
 		regs[0xF] = 0x01;
 	}
 	else {
@@ -367,28 +367,28 @@ void chip8cpu::SHR()
 
 void chip8cpu::SUBN()
 {
-	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
-	uint8_t regY = regs[((instruction16Bit >> 4) & 0x000F)];
+	uint8_t XVal = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t YVal = regs[((instruction16Bit >> 4) & 0x000F)];
 
-	if (regY > regX) {
+	if (YVal > XVal) {
 		regs[0xF] = 0x01;
 	}
 	else {
 		regs[0xF] = 0x00;
 	}
 
-	regs[((instruction16Bit >> 4) & 0x000F)] -= regX;
+	regs[((instruction16Bit >> 8) & 0x000F)] = YVal - XVal;
 }
 
 void chip8cpu::SHL()
 {
 	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
 
-	if (regX & 0x80 == 0x80) {
-		regs[0xF] = 0x01;
+	if ((regX & 0x80) == 0x80) {
+		regs[0xF] = 0x1;
 	}
 	else {
-		regs[0xF] = 0x00;
+		regs[0xF] = 0x0;
 	}
 	regs[((instruction16Bit >> 8) & 0x000F)] *= 2;
 }
