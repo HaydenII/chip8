@@ -4,6 +4,9 @@ class C8Display : public olc::PixelGameEngine
 {
 public:
 	Bus* bus;
+	float CLOCK = 1.0f / 500.0f; // Virtual FPS of 100fps
+	float A_CLOCK = 0.0f;
+
 	C8Display()
 	{
 		sAppName = "Chip 8 Emulator";
@@ -21,32 +24,44 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		if (IsFocused())
-		{ // 0xE0A2
-			if (/*GetKey(olc::Key::SPACE).bHeld || */GetKey(olc::Key::SPACE).bPressed)
-			{
-				bus->cpu.clock();
-				print_cpu_state(&bus->cpu);
+		A_CLOCK += fElapsedTime;
+
+		if (A_CLOCK >= CLOCK) {
+			A_CLOCK -= CLOCK;
+			fElapsedTime = CLOCK;
+			if (IsFocused())
+			{ // 0xE0A2
+				if (/*GetKey(olc::Key::SPACE).bHeld || */GetKey(olc::Key::SPACE).bPressed)
+				{
+					bus->cpu.clock();
+					print_cpu_state(&bus->cpu);
+				}
+				if (GetKey(olc::Key::CTRL).bHeld)
+				{
+					bus->cpu.clock();
+					print_cpu_state(&bus->cpu);
+				}
 			}
-			if (GetKey(olc::Key::CTRL).bHeld)
-			{
-				bus->cpu.clock();
-				print_cpu_state(&bus->cpu);
+
+			bus->cpu.clock();
+
+			// Draw the display array connected to the bus
+			for (int x = 0; x < 32; x++) {
+				uint64_t TempDisplay = (*bus).display[x];
+				for (int y = 0; y < 64; y++) {
+					// Offset by 63 becuase by 64 would shift the last pixel off screen
+					if ((TempDisplay >> (63 - y)) & 0x1) {
+						Draw(y, x, olc::WHITE);
+					}
+					else {
+						Draw(y, x, olc::BLACK);
+					}
+				}
 			}
 		}
 
-		// Draw the display array connected to the bus
-		for (int x = 0; x < 32; x++) {
-			uint64_t TempDisplay = (*bus).display[x];
-			for (int y = 0; y < 64; y++) {
-				if ((TempDisplay >> (63 - y)) & 0x0000000000000001) {
-					Draw(y, x, olc::WHITE);
-				}
-				else {
-					Draw(y, x, olc::BLACK);
-				}
-			}
-		}
+		
+
 		return true;
 	}
 };
@@ -78,7 +93,7 @@ int main() {
 	// Move the char 5 diagonally down the screen
 	//uint8_t program[] = { 0xA0, 0x19,   0x60, 0x00,   0x61, 0x00,   0x70, 0x01,   0x71, 0x01,   0xD0, 0x15,   0x00, 0xE0,   0x12, 0x06};
 
-	std::vector<uint8_t> program = readFile("C:\\Users\\hayde\\Downloads\\IBM.ch8");
+	std::vector<uint8_t> program = readFile("C:\\Users\\hayde\\Downloads\\maze.ch8");
 
 	uint16_t WritePtr = 0x200;
 	for (auto& instr : program) {

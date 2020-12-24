@@ -31,6 +31,9 @@ public:
 	void reset();
 
 	void clock();
+
+	void decrementDelay();
+	void decrementSound();
 public:
 	void write(uint16_t addr, uint8_t data);
 	uint8_t read(uint16_t);

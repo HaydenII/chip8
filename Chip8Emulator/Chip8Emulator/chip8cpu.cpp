@@ -51,8 +51,8 @@ void chip8cpu::reset()
 	}
 	I = 0x0000;
 
-	DelayTimer = 60;
-	SoundTimer = 60;
+	DelayTimer = 1;
+	SoundTimer = 1;
 
 	// Reset the stack
 	sp = 0;
@@ -200,6 +200,16 @@ void chip8cpu::clock()
 	default:
 		break;
 	}
+}
+
+void chip8cpu::decrementDelay()
+{
+
+}
+
+void chip8cpu::decrementSound()
+{
+	SoundTimer--;
 }
 
 uint8_t chip8cpu::read(uint16_t addr)
@@ -433,6 +443,7 @@ void chip8cpu::DRW()
 
 	for (int i = 0; i < BytesToRead; i++) {
 		uint64_t sprite_row = read(I + i);
+		// shifting by (56-x) doesn't work when x is larger than 56 and effectively offsets it to the right
 		sprite_row = sprite_row << (56);
 		sprite_row = sprite_row >> (x);
 		bus->display[y++] ^= sprite_row;
