@@ -172,6 +172,7 @@ void print_cpu_state(chip8cpu* inCPU) {
 	for (int i = 0; i < 16; i++) {
 		cout << " " << inCPU->stack[i] << ", ";
 	}
+	cout << "\nSP index" << "= " << (int)inCPU->sp;
 
 	uint16_t lo = inCPU->read(inCPU->pc - 1);
 	uint16_t hi = inCPU->read(inCPU->pc - 2);
@@ -181,7 +182,7 @@ void print_cpu_state(chip8cpu* inCPU) {
 	uint16_t hi2 = inCPU->read(inCPU->pc);
 	uint16_t PI2 = (hi2 << 8) | lo2;
 
-	cout << endl << "Previous Instruction " << endl;
+	cout << endl << endl << "Previous Instruction " << endl;
 	cout << hex << PI << " = " << instruction_name(hi, lo) << endl;
 	cout << endl << "Next Instruction " << endl;
 	cout << hex << PI2 << " = " << instruction_name(hi2, lo2) << endl;

@@ -43,7 +43,7 @@ void chip8cpu::reset()
 
 	// Point to beginning of program
 	pc = 0x200;
-	sp = 0x00;
+	sp = 0xFF;
 
 	// Reset the registers
 	for (auto& reg : regs) {
@@ -227,13 +227,6 @@ void chip8cpu::ConnectBus(Bus* busptr)
 	bus = busptr;
 }
 
-inline void chip8cpu::DecrementStackPointer()
-{
-	if (sp != 0x0) {
-		sp--;
-	}
-}
-
 void chip8cpu::SYS()
 {
 	pc = (instruction16Bit & 0x0FFF);
@@ -248,8 +241,7 @@ void chip8cpu::CLS()
 
 void chip8cpu::RET()
 {
-	pc = stack[sp];
-	DecrementStackPointer();
+	pc = stack[sp--];
 }
 
 void chip8cpu::JP()
@@ -259,8 +251,7 @@ void chip8cpu::JP()
 
 void chip8cpu::CALL() 
 {
-	sp++;
-	stack[sp] = pc;
+	stack[++sp] = pc;
 	pc = (instruction16Bit & 0x0FFF);
 }
 
@@ -452,11 +443,20 @@ void chip8cpu::DRW()
 
 void chip8cpu::SKP()
 {
-	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	bus->get_keystate();
+	if (lastKeyPressed == Key(((instruction16Bit >> 8) & 0x000F))) {
+		pc += 2;
+	}
+	lastKeyPressed = k;
 }
 
 void chip8cpu::SKNP()
 {
+	bus->get_keystate();
+	if (lastKeyPressed != Key(((instruction16Bit >> 8) & 0x000F))) {
+		pc+=2;
+	}
+	lastKeyPressed = k;
 }
 
 void chip8cpu::LD_4()
@@ -466,12 +466,12 @@ void chip8cpu::LD_4()
 
 void chip8cpu::LD_5()
 {
-	// Loop and check for key press
-	// break from loop when key pressed
-	// store key val in reg ref
-
-	uint8_t KeyVal = 0;
-	regs[((instruction16Bit >> 8) & 0x000F)] = KeyVal;
+	while (lastKeyPressed == k) {
+		bus->get_keystate();
+		//std::this_thread::sleep_for(std::chrono::milliseconds(60));
+	}
+	regs[((instruction16Bit >> 8) & 0x000F)] = lastKeyPressed;
+	lastKeyPressed = k;
 }
 
 void chip8cpu::LD_6()

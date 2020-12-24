@@ -3,6 +3,7 @@
 #include "memory.h"
 #include <vector>
 #include "olcPixelGameEngine.h"
+#include <Windows.h>
 
 class Bus
 {
@@ -13,6 +14,7 @@ public:
 	chip8cpu cpu;
 	memory mem;
 	uint64_t display[32]{ 0 };
+	void get_keystate();
 
 };
 

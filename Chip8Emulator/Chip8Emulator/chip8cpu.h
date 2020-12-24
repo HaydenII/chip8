@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 // For the random operation
 #include <cstdlib>
@@ -38,8 +40,10 @@ public:
 	void write(uint16_t addr, uint8_t data);
 	uint8_t read(uint16_t);
 
-	// The data that has been fetched before the operation
-	uint8_t fetched;
+	// Last key pressed
+	enum Key { k, k1, k2, k3, k4, k5, k6, k7, k8, k9, k0, ka, kb, kc, kd, ke, kf };
+	Key lastKeyPressed = k;
+
 	// The opcode fetched at the beginning of the clock cycle
 	uint16_t instruction16Bit;
 
@@ -113,11 +117,11 @@ public:
 	// Set reg ref to random number ANDed with value provided
 	void RND();
 	// Display, not using yet
-	void DRW(); // FINISH LATER
+	void DRW();
 	// Skip next instruction if the key associated with reg ref is pressed
-	void SKP(); // FINISH LATER
+	void SKP();
 	// Skip next instruction if the key associated with reg ref is not pressed
-	void SKNP(); // FINISH LATER
+	void SKNP();
 	// Set reg ref to timer value
 	void LD_4();
 	// Pause execution until key is pressed then store key val in ref ref
@@ -131,7 +135,7 @@ public:
 	// Set reg I to mem addr of sprite for digit located in reg ref
 	void LD_8();
 	// Take decimal value of reg ref and place the hundreds digit in memory at location in I, tens in i+1 ones at i+2
-	void LD_9(); // FINISH LATER
+	void LD_9(); 
 	// Store register v0 .. vN in memory starting at location I
 	void LD_10();
 	// Read register v0.. vN from memory starting at location I
