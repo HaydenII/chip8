@@ -433,7 +433,8 @@ void chip8cpu::DRW()
 
 	for (int i = 0; i < BytesToRead; i++) {
 		uint64_t sprite_row = read(I + i);
-		sprite_row = sprite_row << (56-x);
+		sprite_row = sprite_row << (56);
+		sprite_row = sprite_row >> (x);
 		bus->display[y++] ^= sprite_row;
 	}
 }
