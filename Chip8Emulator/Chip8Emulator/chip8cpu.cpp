@@ -515,8 +515,8 @@ void chip8cpu::LD_10()
 void chip8cpu::LD_11()
 {
 	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
-	for (int j = 0; j <= regX; j++) {
-		regs[I += j] = read(I += j);
+	for (int j = 0; j < regX; j++) {
+		regs[j] = read(I += j);
 	}
 }
 

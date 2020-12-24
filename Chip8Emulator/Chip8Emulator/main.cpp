@@ -110,7 +110,7 @@ int main() {
 	// Move the char 5 diagonally down the screen
 	//uint8_t program[] = { 0xA0, 0x19,   0x60, 0x00,   0x61, 0x00,   0x70, 0x01,   0x71, 0x01,   0xD0, 0x15,   0x00, 0xE0,   0x12, 0x06};
 
-	std::vector<uint8_t> program = readFile("C:\\Users\\hayde\\Downloads\\tetris.c8");
+	std::vector<uint8_t> program = readFile("C:\\Users\\hayde\\Downloads\\particledemo.ch8");
 
 	uint16_t WritePtr = 0x200;
 	for (auto& instr : program) {
