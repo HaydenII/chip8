@@ -432,12 +432,33 @@ void chip8cpu::DRW()
 	uint8_t x = regs[(instruction16Bit >> 8) & 0x00F]; // x Coordinate
 	uint8_t y = regs[(instruction16Bit >> 4) & 0x00F]; // y Coordinate
 
+	bool OW = false;
 	for (int i = 0; i < BytesToRead; i++) {
 		uint64_t sprite_row = read(I + i);
 		// shifting by (56-x) doesn't work when x is larger than 56 and effectively offsets it to the right
 		sprite_row = sprite_row << (56);
 		sprite_row = sprite_row >> (x);
+		
+		// Check if the display is going to have a 1 turned to a 0
+		if (!OW) {
+			for (int j = 0; j < 63; j++) {
+				auto sc = (bus->display[y] >> (63 - j)) & 0x1;
+				auto sp = (sprite_row >> (63 - j)) & 0x1;
+
+				if ((sc == 1) && (sp == 1)) {
+					OW = true;
+					break;
+				}
+			}
+		}
+
 		bus->display[y++] ^= sprite_row;
+	}
+	if (OW) {
+		regs[0xF] = 0x1;
+	}
+	else {
+		regs[0xF] = 0x0;
 	}
 }
 
@@ -514,7 +535,6 @@ void chip8cpu::LD_10()
 
 void chip8cpu::LD_11()
 {
-	//uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
 	for (int j = 0; j < ((instruction16Bit >> 8) & 0x000F); j++) {
 		regs[j] = read(I += j);
 	}
