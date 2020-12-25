@@ -441,16 +441,14 @@ void chip8cpu::DRW()
 		
 		// Check if the display is going to have a 1 turned to a 0
 		if (!OW) {
-			for (int j = 0; j < 63; j++) {
-				auto sc = (bus->display[y] >> (63 - j)) & 0x1;
-				auto sp = (sprite_row >> (63 - j)) & 0x1;
-
-				if ((sc == 1) && (sp == 1)) {
-					OW = true;
-					break;
-				}
-			}
+			// activate get the zeroes in the difference between the screen row and the sprite row
+			auto zeroes_in_diff = ~(bus->display[y] ^ sprite_row);
+			// & the screenrow with the flipped zeroes on the resulting row
+			// Any matching bits means a 1 in the display row flipped to a 0
+			auto flipped_ones = bus->display[y] & zeroes_in_diff;
+			if (flipped_ones) { OW = true; }
 		}
+		
 
 		bus->display[y++] ^= sprite_row;
 	}
