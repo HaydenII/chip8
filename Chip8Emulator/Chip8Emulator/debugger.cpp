@@ -172,7 +172,10 @@ void print_cpu_state(chip8cpu* inCPU) {
 	for (int i = 0; i < 16; i++) {
 		cout << " " << inCPU->stack[i] << ", ";
 	}
-	cout << "\nSP index" << "= " << (int)inCPU->sp;
+	cout << "\nSP index" << "= " << (int)inCPU->sp << endl;
+
+	cout << "\nDelay Timer" << "= " << (int)inCPU->DelayTimer << endl;
+	cout << "\nSound Timer" << "= " << (int)inCPU->SoundTimer << endl;
 
 	uint16_t lo = inCPU->read(inCPU->pc - 1);
 	uint16_t hi = inCPU->read(inCPU->pc - 2);

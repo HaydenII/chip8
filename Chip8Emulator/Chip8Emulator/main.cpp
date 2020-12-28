@@ -4,7 +4,7 @@ class C8Display : public olc::PixelGameEngine
 {
 public:
 	Bus* bus;
-	float CLOCK = 1.0f / 500.0f; // Virtual FPS of 100fps
+	float CLOCK = 1.0f / 500.0f;
 	float A_CLOCK = 0.0f;
 
 	bool debug;
@@ -27,7 +27,36 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		if (!debug) {
+		if (debug) {
+			if (IsFocused())
+			{
+				if (GetKey(olc::Key::SPACE).bPressed)
+				{
+					bus->cpu.clock();
+					print_cpu_state(&bus->cpu);
+				}
+				if (GetKey(olc::Key::CTRL).bHeld)
+				{
+					bus->cpu.clock();
+					print_cpu_state(&bus->cpu);
+				}
+			}
+
+			// Draw the display array connected to the bus
+			for (int x = 0; x < 32; x++) {
+				uint64_t TempDisplay = (*bus).display[x];
+				for (int y = 0; y < 64; y++) {
+					// Offset by 63 becuase by 64 would shift the last pixel off screen
+					if ((TempDisplay >> (63 - y)) & 0x1) {
+						Draw(y, x, olc::WHITE);
+					}
+					else {
+						Draw(y, x, olc::BLACK);
+					}
+				}
+			}
+		}
+		else {
 			A_CLOCK += fElapsedTime;
 			if (A_CLOCK >= CLOCK) {
 				A_CLOCK -= CLOCK;
@@ -46,35 +75,6 @@ public:
 						else {
 							Draw(y, x, olc::BLACK);
 						}
-					}
-				}
-			}
-		}
-		else {
-			if (IsFocused())
-			{
-				if (/*GetKey(olc::Key::SPACE).bHeld || */GetKey(olc::Key::SPACE).bPressed)
-				{
-					bus->cpu.clock();
-					print_cpu_state(&bus->cpu);
-				}
-				if (GetKey(olc::Key::CTRL).bHeld)
-				{
-					bus->cpu.clock();
-					print_cpu_state(&bus->cpu);
-				}
-			}
-			
-						// Draw the display array connected to the bus
-			for (int x = 0; x < 32; x++) {
-				uint64_t TempDisplay = (*bus).display[x];
-				for (int y = 0; y < 64; y++) {
-					// Offset by 63 becuase by 64 would shift the last pixel off screen
-					if ((TempDisplay >> (63 - y)) & 0x1) {
-						Draw(y, x, olc::WHITE);
-					}
-					else {
-						Draw(y, x, olc::BLACK);
 					}
 				}
 			}
@@ -110,14 +110,12 @@ int main() {
 	// Move the char 5 diagonally down the screen
 	//uint8_t program[] = { 0xA0, 0x19,   0x60, 0x00,   0x61, 0x00,   0x70, 0x01,   0x71, 0x01,   0xD0, 0x15,   0x00, 0xE0,   0x12, 0x06};
 
-	std::vector<uint8_t> program = readFile("C:\\Users\\hayde\\Downloads\\tetris.c8");
+	std::vector<uint8_t> program = readFile("C:\\Users\\hayde\\Downloads\\octojam5title.ch8");
 
 	uint16_t WritePtr = 0x200;
 	for (auto& instr : program) {
 		bus.mem.write(WritePtr++, instr);
 	}
-
-	print_cpu_state(&bus.cpu);
 
 	C8Display game = C8Display();
 	game.ConnectBus(&bus);

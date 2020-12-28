@@ -49,7 +49,7 @@ public:
 
 	// Bus pointer
 	Bus* bus;
-	void ConnectBus(Bus* busptr);
+	void ConnectBus(Bus* busptr); 
 
 	// Registers - 0 .. F
 	uint8_t regs[0xF] = {0};
@@ -58,6 +58,7 @@ public:
 	uint16_t I;
 
 	// Timer registers
+	long long LastTimeUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	uint8_t DelayTimer;
 	uint8_t SoundTimer;
 
@@ -67,7 +68,6 @@ public:
 	// stack pointer
 	uint8_t sp;
 	uint16_t stack[16];
-	inline void DecrementStackPointer();
 
 	// Jump to code at address
 	void SYS();

@@ -200,6 +200,19 @@ void chip8cpu::clock()
 	default:
 		break;
 	}
+
+	// Get the time difference between this clock and last clock
+	// If diff > 16.6 ms tick the timers
+	long long CurrentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	if (CurrentTime - LastTimeUpdate >= 16.6) {
+		DelayTimer--;
+		SoundTimer--;
+		LastTimeUpdate = CurrentTime;
+	}
+
+	if (SoundTimer == 1) {
+		// Beep
+	}
 }
 
 void chip8cpu::decrementDelay()
@@ -452,12 +465,8 @@ void chip8cpu::DRW()
 
 		bus->display[y++] ^= sprite_row;
 	}
-	if (OW) {
-		regs[0xF] = 0x1;
-	}
-	else {
-		regs[0xF] = 0x0;
-	}
+	if (OW) { regs[0xF] = 0x1; }
+	else { regs[0xF] = 0x0; }
 }
 
 void chip8cpu::SKP()
