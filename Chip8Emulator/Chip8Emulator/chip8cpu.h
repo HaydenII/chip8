@@ -125,7 +125,7 @@ public:
 	// Set reg ref to timer value
 	void LD_4();
 	// Pause execution until key is pressed then store key val in ref ref
-	void LD_5(); // FINISH LATER
+	void LD_5();
 	// Set delay timer to reg ref
 	void LD_6();
 	// Set sound timer to reg ref

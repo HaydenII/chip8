@@ -153,6 +153,7 @@ std::string instruction_name(uint8_t hi, uint8_t lo) {
 			break;
 		}
 	default:
+		return " | No matching function | ";
 		break;
 	}
 }

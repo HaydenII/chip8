@@ -43,7 +43,7 @@ void chip8cpu::reset()
 
 	// Point to beginning of program
 	pc = 0x200;
-	sp = 0xFF;
+	sp = 0x00;
 
 	// Reset the registers
 	for (auto& reg : regs) {
@@ -254,7 +254,7 @@ void chip8cpu::CLS()
 
 void chip8cpu::RET()
 {
-	pc = stack[sp--];
+	pc = stack[--sp];
 }
 
 void chip8cpu::JP()
@@ -264,7 +264,7 @@ void chip8cpu::JP()
 
 void chip8cpu::CALL() 
 {
-	stack[++sp] = pc;
+	stack[sp++] = pc;
 	pc = (instruction16Bit & 0x0FFF);
 }
 
@@ -475,7 +475,6 @@ void chip8cpu::SKP()
 	if (lastKeyPressed == Key(((instruction16Bit >> 8) & 0x000F))) {
 		pc += 2;
 	}
-	lastKeyPressed = k;
 }
 
 void chip8cpu::SKNP()
@@ -484,7 +483,7 @@ void chip8cpu::SKNP()
 	if (lastKeyPressed != Key(((instruction16Bit >> 8) & 0x000F))) {
 		pc+=2;
 	}
-	lastKeyPressed = k;
+	lastKeyPressed = k; // reset last key pressed
 }
 
 void chip8cpu::LD_4()
@@ -494,12 +493,12 @@ void chip8cpu::LD_4()
 
 void chip8cpu::LD_5()
 {
-	while (lastKeyPressed == k) {
+	do{
 		bus->get_keystate();
-		//std::this_thread::sleep_for(std::chrono::milliseconds(60));
-	}
+	} while (lastKeyPressed == k);
+
 	regs[((instruction16Bit >> 8) & 0x000F)] = lastKeyPressed;
-	lastKeyPressed = k;
+	lastKeyPressed = k; // reset last key pressed
 }
 
 void chip8cpu::LD_6()
@@ -527,23 +526,28 @@ void chip8cpu::LD_8()
 void chip8cpu::LD_9()
 {
 	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
-	write(I, (regX & 0x03));
-	write(I + 1, (regX & 0x02));
-	write(I + 2, (regX & 0x01));
+	uint8_t p1 = regX % 10;							// Number in 1s place
+	uint8_t p2 = ((regX - p1) % 100) / 10;			// Number in 10s place
+	uint8_t p3 = ((regX - p1 - p2) % 1000) / 100;	// Number in 100s place
+
+	write(I, p3);
+	write(I + 1, p2);
+	write(I + 2, p1);
 }
 
 void chip8cpu::LD_10()
 {
-	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	uint8_t regX = ((instruction16Bit >> 8) & 0x000F);
 	for (int j = 0; j <= regX; j++) {
-		write(I+=j, regs[j]);
+		write(I+j, regs[j]);
 	}
 }
 
 void chip8cpu::LD_11()
 {
-	for (int j = 0; j < ((instruction16Bit >> 8) & 0x000F); j++) {
-		regs[j] = read(I += j);
+	uint8_t regX = ((instruction16Bit >> 8) & 0x000F);
+	for (int j = 0; j <= regX; j++) {
+		regs[j] = read(I + j);
 	}
 }
 
