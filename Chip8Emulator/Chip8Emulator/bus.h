@@ -2,7 +2,6 @@
 #include "chip8cpu.h"
 #include "memory.h"
 #include <vector>
-#include "olcPixelGameEngine.h"
 #include <Windows.h>
 
 class Bus

@@ -27,9 +27,6 @@
     <ClInclude Include="bus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="olcPixelGameEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="debugger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
