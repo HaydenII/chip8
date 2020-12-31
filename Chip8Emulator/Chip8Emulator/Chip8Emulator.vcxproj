@@ -142,17 +142,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="bus.h" />
-    <ClInclude Include="chip8cpu.h" />
+    <ClInclude Include="cpu.h" />
     <ClInclude Include="debugger.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="memory.h" />
+    <ClInclude Include="chip_8_system.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bus.cpp" />
-    <ClCompile Include="chip8cpu.cpp" />
+    <ClCompile Include="cpu.cpp" />
     <ClCompile Include="debugger.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="memory.cpp" />
+    <ClCompile Include="chip_8_system.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

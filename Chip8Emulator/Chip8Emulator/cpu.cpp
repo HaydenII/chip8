@@ -1,13 +1,9 @@
-#include "chip8cpu.h"
+#include "cpu.h"
 #include "bus.h"
 
 chip8cpu::chip8cpu()
 {
 	srand(time(NULL));
-}
-
-chip8cpu::~chip8cpu()
-{
 }
 
 void chip8cpu::reset()

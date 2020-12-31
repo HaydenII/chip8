@@ -28,7 +28,6 @@ private:
 
 public:
 	chip8cpu();
-	~chip8cpu();
 
 	void reset();
 

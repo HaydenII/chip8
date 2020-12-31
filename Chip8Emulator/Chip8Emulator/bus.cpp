@@ -3,10 +3,7 @@
 Bus::Bus()
 {
 	cpu.ConnectBus(this);
-}
-
-Bus::~Bus()
-{
+	cpu.reset();
 }
 
 void Bus::get_keystate()
