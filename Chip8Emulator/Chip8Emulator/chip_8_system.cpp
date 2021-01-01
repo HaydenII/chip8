@@ -138,6 +138,9 @@ void chip_8_system::load_rom_from_path(std::string instr)
 	if (program.empty()) {
 		display_error(e1);
 	}
+	else if (program.size() % 2 == 1) {
+		display_error(e2);
+	}
 
 	write_binary_to_memory(program);
 }

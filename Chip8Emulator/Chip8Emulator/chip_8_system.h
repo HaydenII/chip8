@@ -19,7 +19,7 @@ private:
 	*  e0 - path doesn't exist
 	*  e1 - Program loaded is empty
 	*/
-	enum error_enum{ e0, e1};
+	enum error_enum{ e0, e1, e2};
 	void start_cpu();
 	void start_cpu_debug();
 	void start_display_thread();
