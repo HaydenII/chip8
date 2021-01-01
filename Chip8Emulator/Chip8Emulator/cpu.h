@@ -33,14 +33,13 @@ public:
 
 	void clock();
 
-	void decrementDelay();
-	void decrementSound();
+	void flush_program_memory();
 public:
 	void write(uint16_t addr, uint8_t data);
 	uint8_t read(uint16_t);
 
 	// Last key pressed
-	enum Key { k, k1, k2, k3, k4, k5, k6, k7, k8, k9, k0, ka, kb, kc, kd, ke, kf };
+	enum Key { k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, ka, kb, kc, kd, ke, kf, k};
 	Key lastKeyPressed = k;
 
 	// The opcode fetched at the beginning of the clock cycle
@@ -68,6 +67,7 @@ public:
 	uint8_t sp;
 	uint16_t stack[16];
 
+public:
 	// Jump to code at address
 	void SYS();
 	// Clear the display

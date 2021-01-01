@@ -11,8 +11,14 @@ void chip8cpu::reset()
 	/*
 	* LOADING FONSET IN STARTING AT 0X0000
 	*/
-	// Load fontset
+	// Clear memory
 	uint16_t MemPtr = 0x0000;
+	for (int i = 0; i < 0x0FFF; i++) {
+		bus->mem.write(MemPtr++, 0);
+	}
+
+	// Load fontset
+	MemPtr = 0x0000;
 	uint8_t font_set[0x10][5] = {
 		{0xF0, 0x90, 0x90, 0x90, 0xF0},
 		{0x20, 0x60, 0x20, 0x20, 0x70},
@@ -211,16 +217,6 @@ void chip8cpu::clock()
 	}
 }
 
-void chip8cpu::decrementDelay()
-{
-
-}
-
-void chip8cpu::decrementSound()
-{
-	SoundTimer--;
-}
-
 uint8_t chip8cpu::read(uint16_t addr)
 {
 	return bus->mem.read(addr);
@@ -236,6 +232,18 @@ void chip8cpu::ConnectBus(Bus* busptr)
 	bus = busptr;
 }
 
+void flush_program_memory() {
+
+}
+
+
+/*
+* 
+* 
+* OPERATIONS
+* 
+* 
+*/
 void chip8cpu::SYS()
 {
 	pc = (instruction16Bit & 0x0FFF);
@@ -458,7 +466,6 @@ void chip8cpu::DRW()
 			if (flipped_ones) { OW = true; }
 		}
 		
-
 		bus->display[y++] ^= sprite_row;
 	}
 	if (OW) { regs[0xF] = 0x1; }
@@ -514,9 +521,9 @@ void chip8cpu::ADD_3()
 
 void chip8cpu::LD_8()
 {
-	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+	//uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
 	
-	I = (uint16_t)(regX * 0X05);
+	I = (uint16_t)(((instruction16Bit >> 8) & 0x000F) * 0X5);
 }
 
 void chip8cpu::LD_9()
@@ -546,4 +553,3 @@ void chip8cpu::LD_11()
 		regs[j] = read(I + j);
 	}
 }
-

@@ -1,30 +1,4 @@
 #include "debugger.h"
-/*
-* Reg 0	=
-* Reg 1	=
-* Reg 2	=
-* Reg 3	=
-* Reg 4	=
-* Reg 5	=
-* Reg 6	=
-* Reg 7	=
-* Reg 8	=
-* Reg 9	=
-* Reg A	=
-* Reg B	=
-* Reg C	=
-* Reg D	=
-* Reg E	=
-* Reg F	=
-* 
-* I		=
-* 
-* PC	=
-* SP	=
-* 
-* Current Instruction
-* 6012	= LD
-*/
 
 std::string instruction_name(uint8_t hi, uint8_t lo) {
 	uint16_t instruction16Bit = (hi << 8) | lo;
