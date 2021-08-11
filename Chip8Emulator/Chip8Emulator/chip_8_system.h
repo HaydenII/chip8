@@ -1,6 +1,7 @@
 #pragma once
 #include "bus.h"
 #include "debugger.h"
+#include "error_codes.h"
 
 #include <memory>
 
@@ -14,21 +15,34 @@
 
 class chip_8_system : public Bus
 {
+public:
+	void start();
+	void load_rom(std::string);
+
 private:
 	/*
-	*  e0 - path doesn't exist
-	*  e1 - Program loaded is empty
+	* initialiser functions
 	*/
-	enum error_enum{ e0, e1, e2};
 	void start_cpu();
 	void start_cpu_debug();
 	void start_display_thread();
-public:
-	std::thread display_thread;
-	void write_binary_to_memory(std::vector<uint8_t>);
-public:
+
+	/*
+	* pointer to display. 
+	* 
+	* Not in bus because it's not part
+	* of the internal system. Putting it in the chip_8 class
+	* is analagous to plugging it into the system
+	* 
+	* The display thread requires a pointer to object
+	*/
 	std::unique_ptr<renderer> display_screen = nullptr;
-	void start();
-	void load_rom_from_path(std::string);
+	std::thread display_thread;
+
+	/*
+	* Misc.
+	*/
 	void display_error(error_enum);
+
+	void write_binary_to_memory(std::vector<uint8_t>*);
 };

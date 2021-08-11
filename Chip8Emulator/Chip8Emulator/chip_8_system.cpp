@@ -1,15 +1,7 @@
 #include "chip_8_system.h"
 
 namespace misc_functions {
-	std::vector<uint8_t> LoadBinaryFile(const char* filename)
-	{
-		// open the file:
-		std::basic_ifstream<uint8_t> file(filename, std::ios::binary);
-
-		// read the data:
-		return std::vector<uint8_t>((std::istreambuf_iterator<uint8_t>(file)), std::istreambuf_iterator<uint8_t>());
-	}
-
+	
 	inline long long Get_Current_Time() {
 		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
@@ -70,40 +62,85 @@ namespace misc_functions {
 	};
 }
 
+/*
+* Public
+* ---
+* Begins the cpu and the display threads
+*/
+void chip_8_system::start()
+{
+	start_display_thread();
+
+	// Saves time by stopping render execution when it definitely won't be needed
+	while (!display_screen->window.isOpen()) {
+		Sleep(100);
+	}
+	start_cpu();
+
+	// Closes the thread
+	display_thread.join();
+}
+
+/*
+* Loads the binary into the rom_loader object then read into memory
+*/
+void chip_8_system::load_rom(std::string inPath)
+{
+	// Loads the file as binary into binary_data member variable inside romloader
+	error_enum loaderror = romloader.load_rom_from_path(inPath);
+
+	if (loaderror != e0) { display_error(loaderror); return; }
+
+	if (romloader.binary_data.empty()) { return; }
+
+	write_binary_to_memory(&romloader.binary_data);
+
+}
+
+
+/*
+* Private
+* ---
+* Begin the display loop
+*/
 void chip_8_system::start_display_thread()
 {
+	// The render thread requires a pointer to object
 	display_screen = std::unique_ptr<renderer>(new renderer);
 	display_screen->ConnectBus(this);
 	display_thread = std::thread(&renderer::render_loop, std::ref(*display_screen));
 }
 
-void chip_8_system::start()
-{
-	start_display_thread();
-	while (!display_screen->window.isOpen()) {
-		Sleep(100);
-	}
-	start_cpu();
-	display_thread.join();
-}
-
-// Main CPU loop - clock the CPU 500 times a second (once every 2 ms)
+/*
+* Main CPU loop - clock the CPU 500 times a second(once every 2 ms)
+*/
 void chip_8_system::start_cpu()
 {
 	bool open_window = false;
 	long long lastTime = misc_functions::Get_Current_Time();
 	long long CurrentTime;
+	bool copypastetoggle = false;
 	while (!GetAsyncKeyState(VK_ESCAPE) && display_screen->window.isOpen()) {
 		CurrentTime = misc_functions::Get_Current_Time();
 		if (CurrentTime - lastTime >= 2) {
 			cpu.clock();
 			lastTime = CurrentTime;
 		}
+
+		if (!copypastetoggle && GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(0x56)) {
+			std::string asd = sf::Clipboard::getString();
+			copypastetoggle = true;
+		}
+		else if (copypastetoggle && !(GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(0x56))) {
+			copypastetoggle = false;
+		}
 	}
 }
 
-// Main CPU loop - clock the CPU each time you press spacebar
-// And print the entire state of the cpu in the console
+/*
+* Main CPU loop - clock the CPU each time you press spacebar
+* And print the entire state of the cpu in the console
+*/
 void chip_8_system::start_cpu_debug()
 {
 	print_cpu_state(&cpu);
@@ -116,33 +153,6 @@ void chip_8_system::start_cpu_debug()
 			break; 
 		}
 	}
-}
-
-void chip_8_system::load_rom_from_path(std::string instr)
-{
-	using namespace std::filesystem;
-
-	path ReadPath;
-
-	// If argument is not a full path append the string to the current path
-	if (instr.find(':') && exists(instr)) {
-		ReadPath = path(instr);
-	}
-	else {
-		// Path doesn't exist
-		display_error(e0);
-	}
-
-	// Load the chip8 binary
-	std::vector<uint8_t> program = misc_functions::LoadBinaryFile(ReadPath.string().c_str());
-	if (program.empty()) {
-		display_error(e1);
-	}
-	else if (program.size() % 2 == 1) {
-		display_error(e2);
-	}
-
-	write_binary_to_memory(program);
 }
 
 void chip_8_system::display_error(error_enum inerr)
@@ -163,15 +173,17 @@ void chip_8_system::display_error(error_enum inerr)
 		break;
 	}
 	
-	write_binary_to_memory(error_rom.get_bin());
+	std::vector<uint8_t> errorRomBin = error_rom.get_bin();
+
+	write_binary_to_memory(&errorRomBin);
 
 }
 
-void chip_8_system::write_binary_to_memory(std::vector<uint8_t> program)
+void chip_8_system::write_binary_to_memory(std::vector<uint8_t>* program)
 {
 	// Write the binary into memory
 	uint16_t WritePtr = 0x200;
-	for (auto& instr : program) {
+	for (auto& instr : (*program)) {
 		mem.write(WritePtr++, instr);
 	}
 }
