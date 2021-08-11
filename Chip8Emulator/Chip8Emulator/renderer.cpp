@@ -42,11 +42,6 @@ void renderer::render_loop()
 			uint64_t TempDisplay = (bus)->display[x];
 			for (int y = 0; y < 64; y++) {
 
-				sf::Color b;
-				if ((TempDisplay >> (63 - y)) & 0x1) {
-					b = ScrShapes[y][x].getFillColor();
-				}
-
 				// Offset by 63 becuase by 64 would shift the last pixel off screen
 				if (((TempDisplay >> (63 - y)) & 0x1) && (ScrShapes[y][x].getFillColor() == sf::Color::Black)) {
 					ScrShapes[y][x].setFillColor(sf::Color::White);
