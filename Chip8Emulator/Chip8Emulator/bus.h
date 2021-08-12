@@ -1,6 +1,8 @@
 #pragma once
 #include "renderer.h"
 #include <Windows.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "cpu.h"
 #include "memory.h"
@@ -18,4 +20,5 @@ public:
 
 public:
 	void get_keystate();
+	void wipe_display_buffer();
 };

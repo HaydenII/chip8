@@ -19,6 +19,8 @@ public:
 	void start();
 	void load_rom(std::string);
 
+	std::string pasted_url = "";
+
 private:
 	/*
 	* initialiser functions

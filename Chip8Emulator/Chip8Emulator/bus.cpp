@@ -1,6 +1,6 @@
 #include "bus.h"
 
-Bus::Bus()
+Bus::Bus() : cpu(), mem(), romloader()
 {
 	cpu.ConnectBus(this);
 	cpu.reset();
@@ -72,4 +72,9 @@ void Bus::get_keystate()
 		cpu.lastKeyPressed = cpu.kf;
 		return;
 	}
+}
+
+void Bus::wipe_display_buffer()
+{
+	memset(&display, 0, 8 * 32);
 }

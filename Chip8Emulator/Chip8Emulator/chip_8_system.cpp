@@ -128,12 +128,24 @@ void chip_8_system::start_cpu()
 		}
 
 		if (!copypastetoggle && GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(0x56)) {
-			std::string asd = sf::Clipboard::getString();
+			pasted_url = sf::Clipboard::getString();
 			copypastetoggle = true;
 		}
 		else if (copypastetoggle && !(GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(0x56))) {
 			copypastetoggle = false;
 		}
+
+		if (pasted_url != "" && GetAsyncKeyState(VK_RETURN)) {
+			cpu.reset();
+			mem.wipe_memory();
+			wipe_display_buffer();
+
+			std::cout << pasted_url.substr(1, pasted_url.size() -2) << std::endl;
+			load_rom(pasted_url.substr(1, pasted_url.size() -2));
+
+			pasted_url = "";
+		}
+
 	}
 }
 
@@ -167,6 +179,15 @@ void chip_8_system::display_error(error_enum inerr)
 	case(e1):
 		error_rom.write_string("E1");
 		break;
+
+	case(e2):
+		error_rom.write_string("E2");
+		break;
+
+	case(e3):
+		error_rom.write_string("E3");
+		break;
+
 
 	default:
 		error_rom.write_string("F");

@@ -2,9 +2,7 @@
 
 memory::memory()
 {
-	for (auto &b : memarray) {
-		b = 0x00;
-	}
+	wipe_memory();
 }
 
 void memory::write(uint16_t addr, uint8_t data)
@@ -20,4 +18,9 @@ uint8_t memory::read(uint16_t addr)
 		return memarray[addr];
 	}
 	return 0x00;
+}
+
+void memory::wipe_memory()
+{
+	memset(&memarray, 0, 0x1000);
 }
