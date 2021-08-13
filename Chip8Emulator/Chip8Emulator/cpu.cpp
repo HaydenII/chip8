@@ -11,14 +11,8 @@ void chip8cpu::reset()
 	/*
 	* LOADING FONSET IN STARTING AT 0X0000
 	*/
-	// Clear memory
 	uint16_t MemPtr = 0x0000;
-	for (int i = 0; i < 0x0FFF; i++) {
-		bus->mem.write(MemPtr++, 0);
-	}
 
-	// Load fontset
-	MemPtr = 0x0000;
 	uint8_t font_set[0x10][5] = {
 		{0xF0, 0x90, 0x90, 0x90, 0xF0},
 		{0x20, 0x60, 0x20, 0x20, 0x70},
@@ -48,19 +42,15 @@ void chip8cpu::reset()
 	sp = 0x00;
 
 	// Reset the registers
-	for (auto& reg : regs) {
-		reg = 0x00;
-	}
-	I = 0x0000;
+	memset(&regs, 0, sizeof(regs));
+	I = 0x0;
 
 	DelayTimer = 1;
 	SoundTimer = 1;
 
 	// Reset the stack
 	sp = 0;
-	for (auto& layer : stack) {
-		layer = 0x0000;
-	}
+	memset(&stack, 0, sizeof(stack));
 }
 
 void chip8cpu::clock()
@@ -475,7 +465,9 @@ void chip8cpu::DRW()
 void chip8cpu::SKP()
 {
 	bus->get_keystate();
-	if (lastKeyPressed == Key(((instruction16Bit >> 8) & 0x000F))) {
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+
+	if (lastKeyPressed == Key(regX)) {
 		pc += 2;
 	}
 }
@@ -483,7 +475,9 @@ void chip8cpu::SKP()
 void chip8cpu::SKNP()
 {
 	bus->get_keystate();
-	if (lastKeyPressed != Key(((instruction16Bit >> 8) & 0x000F))) {
+	uint8_t regX = regs[((instruction16Bit >> 8) & 0x000F)];
+
+	if (lastKeyPressed != Key(regX)) {
 		pc+=2;
 	}
 	lastKeyPressed = k; // reset last key pressed

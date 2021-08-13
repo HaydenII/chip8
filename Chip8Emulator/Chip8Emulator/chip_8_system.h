@@ -28,6 +28,7 @@ private:
 	void start_cpu();
 	void start_cpu_debug();
 	void start_display_thread();
+	void reset_system();
 
 	/*
 	* pointer to display. 

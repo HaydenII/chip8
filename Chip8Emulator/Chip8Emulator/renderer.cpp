@@ -22,7 +22,6 @@ void renderer::render_loop()
 {
 	if (bus == nullptr) { return; }
 
-	// Create window and open window
 	window.create(sf::VideoMode(1024, 512), "Chip 8 Emulator", sf::Style::Default);
 
 	while (window.isOpen())
@@ -32,8 +31,9 @@ void renderer::render_loop()
 		while (window.pollEvent(event))
 		{
 			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
-				window.close();
+			if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape) {
+				//window.close();
+			}
 		}
 
 		window.clear(sf::Color::Black);
@@ -60,4 +60,11 @@ void renderer::render_loop()
 void renderer::ConnectBus(Bus* InBus)
 {
 	bus = InBus;
+}
+
+void renderer::close_window()
+{
+	if (window.isOpen()) {
+		window.close();
+	}
 }

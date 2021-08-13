@@ -106,9 +106,16 @@ void chip_8_system::load_rom(std::string inPath)
 void chip_8_system::start_display_thread()
 {
 	// The render thread requires a pointer to object
-	display_screen = std::unique_ptr<renderer>(new renderer);
+	display_screen = std::unique_ptr<renderer>(new renderer	);
 	display_screen->ConnectBus(this);
 	display_thread = std::thread(&renderer::render_loop, std::ref(*display_screen));
+}
+
+void chip_8_system::reset_system()
+{
+	cpu.reset();
+	mem.wipe_memory();
+	wipe_display_buffer();
 }
 
 /*
@@ -116,29 +123,31 @@ void chip_8_system::start_display_thread()
 */
 void chip_8_system::start_cpu()
 {
-	bool open_window = false;
-	long long lastTime = misc_functions::Get_Current_Time();
-	long long CurrentTime;
-	bool copypastetoggle = false;
-	while (!GetAsyncKeyState(VK_ESCAPE) && display_screen->window.isOpen()) {
-		CurrentTime = misc_functions::Get_Current_Time();
-		if (CurrentTime - lastTime >= 2) {
-			cpu.clock();
-			lastTime = CurrentTime;
-		}
+	using clock = std::chrono::high_resolution_clock;
+	using namespace std::literals;
 
+	bool copypastetoggle = false;
+	clock::time_point started = clock::now();
+	clock::time_point target = started + 2ms;
+
+	while (display_screen->window.isOpen()) {
+		// Handle copy paste
 		if (!copypastetoggle && GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(0x56)) {
 			pasted_url = sf::Clipboard::getString();
 			copypastetoggle = true;
 		}
-		else if (copypastetoggle && !(GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(0x56))) {
-			copypastetoggle = false;
+		else if (copypastetoggle && !(GetAsyncKeyState(VK_CONTROL) && GetAsyncKeyState(0x56))) { 
+			copypastetoggle = false; 
 		}
 
+		// Close the window and shut the system down
+		if (GetAsyncKeyState(VK_ESCAPE)) {
+			display_screen->close_window();
+		}
+
+		// Run rom
 		if (pasted_url != "" && GetAsyncKeyState(VK_RETURN)) {
-			cpu.reset();
-			mem.wipe_memory();
-			wipe_display_buffer();
+			reset_system();
 
 			std::cout << pasted_url.substr(1, pasted_url.size() -2) << std::endl;
 			load_rom(pasted_url.substr(1, pasted_url.size() -2));
@@ -146,6 +155,9 @@ void chip_8_system::start_cpu()
 			pasted_url = "";
 		}
 
+		cpu.clock();
+		std::this_thread::sleep_until(target);
+		target += 2ms;
 	}
 }
 

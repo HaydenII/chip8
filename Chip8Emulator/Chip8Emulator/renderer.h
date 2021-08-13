@@ -15,4 +15,7 @@ public:
 	renderer(Bus*);
 	void render_loop();
 	void ConnectBus(Bus*);
+
+	// Creates and opens the window
+	void close_window();
 };

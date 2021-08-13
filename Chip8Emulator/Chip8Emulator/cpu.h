@@ -38,10 +38,6 @@ public:
 	void write(uint16_t addr, uint8_t data);
 	uint8_t read(uint16_t);
 
-	// Last key pressed
-	enum Key { k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, ka, kb, kc, kd, ke, kf, k};
-	Key lastKeyPressed = k;
-
 	// The opcode fetched at the beginning of the clock cycle
 	uint16_t instruction16Bit;
 
@@ -50,7 +46,7 @@ public:
 	void ConnectBus(Bus* busptr); 
 
 	// Registers - 0 .. F
-	uint8_t regs[0xF] = {0};
+	uint8_t regs[0x10] = {0};
 
 	// Address register
 	uint16_t I;
@@ -65,7 +61,13 @@ public:
 
 	// stack pointer
 	uint8_t sp;
-	uint16_t stack[16];
+	uint16_t stack[0x10];
+
+
+	// Input
+	enum Key { k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, ka, kb, kc, kd, ke, kf, k };
+	Key lastKeyPressed = k;
+
 
 public:
 	// Jump to code at address
